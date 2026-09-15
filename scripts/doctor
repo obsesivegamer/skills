@@ -1,0 +1,27 @@
+#!/usr/bin/env python3
+import sys
+
+from workflow_lib import harness_skill_dirs, same_link, skills
+
+
+def main():
+    problems = 0
+    checked = 0
+    for harness, destination in harness_skill_dirs().items():
+        for source in skills():
+            checked += 1
+            link = destination / source.name
+            if same_link(link, source):
+                continue
+            problems += 1
+            status = "DRIFT" if link.exists() or link.is_symlink() else "MISSING"
+            print(f"{status} [{harness}] {link}")
+    if problems:
+        print(f"ISSUES: {problems} of {checked} links need attention.")
+        return 1
+    print(f"PASS: {checked} links point to this repository.")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,0 +1,55 @@
+#!/usr/bin/env python3
+import argparse
+import sys
+
+from workflow_lib import harness_skill_dirs, same_link, skills
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Safely link workflow skills into supported harnesses.")
+    parser.add_argument("--apply", action="store_true", help="Create missing links after a clean preflight.")
+    parser.add_argument(
+        "--adopt-existing-symlinks",
+        action="store_true",
+        help="Replace symlinks that point elsewhere; never replaces real files or directories.",
+    )
+    args = parser.parse_args()
+
+    planned = []
+    conflicts = []
+    for harness, destination in harness_skill_dirs().items():
+        for source in skills():
+            link = destination / source.name
+            if same_link(link, source):
+                continue
+            if link.is_symlink() and args.adopt_existing_symlinks:
+                planned.append((harness, source, link))
+            elif link.exists() or link.is_symlink():
+                conflicts.append((harness, link))
+            else:
+                planned.append((harness, source, link))
+
+    for harness, link in conflicts:
+        print(f"CONFLICT [{harness}] {link}")
+    if conflicts:
+        print("No changes made. Resolve conflicts explicitly, then rerun.")
+        return 2
+
+    mode = "APPLY" if args.apply else "DRY-RUN"
+    for harness, source, link in planned:
+        print(f"{mode} [{harness}] {link} -> {source}")
+
+    if not args.apply:
+        return 0
+
+    for _, source, link in planned:
+        link.parent.mkdir(parents=True, exist_ok=True)
+        if link.is_symlink():
+            link.unlink()
+        link.symlink_to(source)
+    print(f"Created {len(planned)} links.")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

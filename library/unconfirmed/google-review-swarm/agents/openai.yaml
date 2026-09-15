@@ -1,0 +1,4 @@
+interface:
+  display_name: "Google Review Swarm"
+  short_description: "Build balanced travel heat maps from reviewers"
+  default_prompt: "Use $google-review-swarm to build a category-balanced, two-hop tourist heat map from a sample Google Maps reviewer."

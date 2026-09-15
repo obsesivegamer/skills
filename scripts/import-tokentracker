@@ -1,0 +1,92 @@
+#!/usr/bin/env python3
+import argparse
+import hashlib
+import json
+import shutil
+import sys
+from pathlib import Path
+
+
+def content_hash(directory):
+    digest = hashlib.sha256()
+    for path in sorted(p for p in directory.rglob("*") if p.is_file() and p.name != ".DS_Store"):
+        digest.update(str(path.relative_to(directory)).encode())
+        digest.update(b"\0")
+        digest.update(path.read_bytes())
+        digest.update(b"\0")
+    return digest.hexdigest()
+
+
+def source_records(cache_path):
+    cache = json.loads(cache_path.read_text(encoding="utf-8"))
+    return {entry.get("name"): entry for entry in cache.get("skills", []) if entry.get("name")}
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Import TokenTracker skills into a source-grouped repository.")
+    parser.add_argument("--source", type=Path, required=True)
+    parser.add_argument("--cache", type=Path, required=True)
+    parser.add_argument("--repo", type=Path, required=True)
+    parser.add_argument("--apply", action="store_true")
+    args = parser.parse_args()
+
+    records = source_records(args.cache)
+    plans = []
+    conflicts = []
+    for source in sorted(p for p in args.source.iterdir() if p.is_dir() and (p / "SKILL.md").is_file()):
+        record = records.get(source.name, {})
+        provider = record.get("repoOwner") or "unconfirmed"
+        destination = args.repo / "library" / provider / source.name
+        link = args.repo / ".agents" / "skills" / source.name
+        if destination.exists() or destination.is_symlink() or link.exists() or link.is_symlink():
+            conflicts.append(source.name)
+        plans.append((source, destination, link, provider, record))
+
+    if conflicts:
+        for name in conflicts:
+            print(f"CONFLICT {name}")
+        print("No changes made.")
+        return 2
+
+    mode = "APPLY" if args.apply else "DRY-RUN"
+    for source, destination, _, provider, _ in plans:
+        print(f"{mode} [{provider}] {source.name} -> {destination}")
+    if not args.apply:
+        return 0
+
+    manifest = {"schema_version": 1, "skills": []}
+    for source, destination, link, provider, record in plans:
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copytree(source, destination, ignore=shutil.ignore_patterns(".DS_Store"))
+        link.parent.mkdir(parents=True, exist_ok=True)
+        link.symlink_to(Path("../..") / destination.relative_to(args.repo))
+        license_files = sorted(
+            p.name for p in destination.iterdir()
+            if p.is_file() and (p.name == "LICENSE" or p.name.startswith("LICENSE."))
+        )
+        manifest["skills"].append({
+            "name": source.name,
+            "ownership": "vendored-pending-review",
+            "provider": provider,
+            "path": str(destination.relative_to(args.repo)),
+            "repository": (
+                f"https://github.com/{record['repoOwner']}/{record['repoName']}"
+                if record.get("repoOwner") and record.get("repoName") else None
+            ),
+            "upstream_path": record.get("readmeUrl"),
+            "upstream_branch": record.get("repoBranch"),
+            "revision": None,
+            "license": license_files[0] if license_files else None,
+            "content_sha256": content_hash(destination),
+            "modified": None,
+        })
+
+    manifest_path = args.repo / "manifests" / "skills.lock.json"
+    manifest_path.parent.mkdir(parents=True, exist_ok=True)
+    manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+    print(f"Imported {len(plans)} skills.")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
