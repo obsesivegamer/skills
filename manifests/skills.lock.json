@@ -145,6 +145,19 @@
       "modified": null
     },
     {
+      "name": "codex-swarm",
+      "ownership": "owned",
+      "provider": "obsesivegamer",
+      "path": "library/obsesivegamer/codex-swarm",
+      "repository": "https://github.com/obsesivegamer/skills",
+      "upstream_path": "library/obsesivegamer/codex-swarm/SKILL.md",
+      "upstream_branch": "main",
+      "revision": null,
+      "license": null,
+      "content_sha256": "435c9b706cd56bb3d384634994499a1b5ed2e9f3994f6e3c610235cdf52aaf19",
+      "modified": null
+    },
+    {
       "name": "create-verification-skill",
       "ownership": "vendored-pending-review",
       "provider": "cursor",

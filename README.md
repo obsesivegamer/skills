@@ -126,7 +126,7 @@ Until update tooling is added, review upstream changes manually and copy only th
 
 ## Current status
 
-- 61 skills are tracked in `manifests/skills.lock.json`.
+- 62 skills are tracked in `manifests/skills.lock.json`.
 - 366 links are installed across six skill directories on the original Mac.
 - Global Codex and Claude instruction snapshots are included.
 - Automated upstream synchronization and Grok Build setup remain pending.
