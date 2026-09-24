@@ -73,12 +73,6 @@ At the start of each task, determine the following **silently** — surface it o
 
 Use subagents (`Agent`) for open-ended exploration that would consume a lot of context, or for independent lookups that can run in parallel: `Explore` for read-only code search, `Plan` for architecting, `general-purpose` for broader multi-step research, `claude-code-guide` for Claude Code / SDK / API questions.
 
-### Second-opinion reviewers (grok, codex, `/interrogate`)
-
-Spawn each reviewer as a **subagent** running the ordinary CLI from my PATH (`grok`, `codex`), in the **same project directory as the master session**, so the run shows up in the cmux sidebar and I can follow it live. Do not build headless one-shots with `--sandbox`, `--always-approve`, `--prompt-file`, output redirection, or a `GH_TOKEN` hand-off — a raw process is invisible to cmux (`grok dashboard` shows "No agents yet"), and the sandbox blocks keychain access, which breaks the reviewer's `gh` with HTTP 401 and then needs working around.
-
-Keep only flags that carry a real requirement: the model and reasoning tier I asked for (e.g. `-m grok-4.6 --reasoning-effort xhigh`, since grok's config defaults effort to `low`), and `--no-subagents` when I cap the reviewer count. Headless flag details still apply if a run genuinely has to be non-interactive, but that is the exception.
-
 ## Workspace continuity
 
 Use `.agent/CONTINUITY.md` when work is multi-session, shared with another agent tool, likely to be compacted, or complex enough that a durable handoff is valuable.
@@ -113,7 +107,8 @@ Use `.agent/CONTINUITY.md` when work is multi-session, shared with another agent
 
 Whenever you write text **to Jeremy** (chat replies, status updates, explanations — not code, not commit messages, not tool logs), apply the `i-have-adhd` skill in full:
 
-- Load it by reading `~/.claude/skills/i-have-adhd/SKILL.md` — the Skill tool can't load it (slash-only)
+- Skill path: the `i-have-adhd` skill already installed for this CLI
 - Lead with the next action; number multi-step work; restate state each turn; specific time estimates; no preamble/recap/closers; cap visible lists to 5
 - Stays on for the whole session until Jeremy says `stop adhd mode` or `normal mode`
 - Does not apply to code you write into files — only prose addressed to him
+
