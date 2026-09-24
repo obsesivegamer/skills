@@ -127,6 +127,12 @@ Until update tooling is added, review upstream changes manually and copy only th
 ## Current status
 
 - 62 skills are tracked in `manifests/skills.lock.json`.
-- 366 links are installed across six skill directories on the original Mac.
+- 372 links are installed across six skill directories on the original Mac.
 - Global Codex and Claude instruction snapshots are included.
 - Automated upstream synchronization and Grok Build setup remain pending.
+
+## Try the Desktop swarm
+
+The [codex-swarm skill](library/obsesivegamer/codex-swarm/SKILL.md) runs a coordinator and native workers in Codex Desktop. Select Astra and Medium, then use the [first-trial prompt](library/obsesivegamer/codex-swarm/references/TRIAL.md) in your chosen project.
+
+The coordinator maintains a project-local board, delegates separate reports, and routes evidence for independent verification. Only one agent controls the Mac UI at a time. The default 60-minute check and 120-minute stop deadlines require an active coordinator; they are not an unattended OS watchdog. cmux remains available when explicitly requested.

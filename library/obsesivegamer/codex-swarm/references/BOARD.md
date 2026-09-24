@@ -1,88 +1,47 @@
-# Swarm Message Board
+# Swarm board
 
-**Job:** _(one-line goal)_  
-**Started:** _(ISO local / ET)_  
-**Coordinator tab:** `Codex CLI → swarm-coordinator`  
-**Board path:** ``BOARD.md` in the job cwd (or a durable path you agreed)`
+Only the coordinator edits this file. Workers read it and write separate reports.
 
----
+## Assignment
 
-## Status
+- Goal:
+- Acceptance criteria:
+- Project and run directory, absolute paths:
+- Coordinator task:
+- Execution mode: Desktop native subagents
+- Git actions: none
+- Requested model and reasoning:
+- Started and last updated, ISO timestamps:
+- Phase: kickoff / researching / verifying / implementing / done / blocked
+- UI operator: none
 
-| Field | Value |
-|-------|--------|
-| Phase | kickoff / researching / verifying / consensus / implementing / babysit-pr / done / blocked |
-| Overall | green / yellow / red |
-| Last board update | _(who + time ET)_ |
-| Active workers | _(tab titles)_ |
-| Blockers | _(none or list)_ |
+## Workers and deadlines
 
----
+| Worker and tool ID | Assignment and owned files | Report path | Started | Check deadline | Stop deadline | Status |
+|---|---|---|---|---|---|---|
 
-## Claims / Theories
+## Claims and evidence
 
-Append; never silently delete. Mark disposition when verified.
+Preserve rejected claims and the reason. Record independent verification before consensus.
 
-| ID | Author (tab) | Claim / theory | Confidence | Status | Notes |
-|----|--------------|----------------|------------|--------|-------|
-| T1 | | | low/med/high | open / verifying / supported / rejected | |
+| Claim ID | Author | Claim | Evidence path or command | Independent verifier and result | Disposition |
+|---|---|---|---|---|---|
 
----
+## Decisions and open questions
 
-## Evidence
+| ISO time | Decision or question | Evidence or reason | Owner and next action |
+|---|---|---|---|
 
-Link claims to concrete proof (paths, commands, PR URLs, test output snippets).
+## Deadline interventions
 
-| ID | Related claim | Evidence | Source (tab / path) | Time ET |
-|----|---------------|----------|---------------------|---------|
-| E1 | T1 | | | |
+| ISO time | Worker | Check, redirect, interrupt, or extension | Reason and preserved report |
+|---|---|---|---|
 
----
+Default check is 60 minutes after start; stop is 120 minutes after start. Short trials record shorter deadlines. Active supervision is required; this file does not enforce timers.
 
-## Open Questions
+## Outcome
 
-| ID | Question | Owner | Needed by | Status |
-|----|----------|-------|-----------|--------|
-| Q1 | | | | open / answered |
-
----
-
-## Consensus
-
-What the swarm currently agrees is true / the plan forward. Update only after verification, not vibes.
-
-- **Agreed:**
-- **Rejected / parked:**
-- **Decision log:** _(timestamp — decision — why)_
-
----
-
-## Next Actions
-
-| Priority | Action | Owner (tab) | Due / timer | Done? |
-|----------|--------|-------------|-------------|-------|
-| 1 | | coordinator / worker-N | | |
-
----
-
-## Doom-loop / Timer Notes
-
-Hard policy (Ben Davis–style):
-
-- **~60m check:** Coordinator must inspect each research/worker thread (cmux capture-pane + BOARD.md). Re-prompt, narrow scope, or reassign if stuck.
-- **~120m kill:** If still no useful BOARD.md progress, kill/reassign that worker. No infinite ruts.
-- **Anti-doom:** Prefer new angles over repeating the same failing approach. Log kills here.
-
-| Worker tab | Started ET | Last check ET | Check (~60m) | Kill-by (~120m) | Disposition |
-|------------|------------|---------------|--------------|-----------------|-------------|
-| swarm-worker-1 | | | | | running / checked / killed / done |
-
-**Kill / reassign log:**
-
-- _(timestamp — tab — reason — replacement)_
-
----
-
-## Worker Scratch (optional short notes)
-
-Workers may paste brief status here; durable claims go in **Claims / Theories** + **Evidence**.
+- PASS / ISSUES / BLOCKED:
+- Acceptance evidence:
+- Worker final states:
+- Remaining limitations:

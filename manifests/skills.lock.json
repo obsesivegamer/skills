@@ -67,6 +67,19 @@
       "modified": null
     },
     {
+      "name": "babysit-pr",
+      "ownership": "owned",
+      "provider": "obsesivegamer",
+      "path": "library/obsesivegamer/babysit-pr",
+      "repository": "https://github.com/obsesivegamer/skills",
+      "upstream_path": "library/obsesivegamer/babysit-pr/SKILL.md",
+      "upstream_branch": "main",
+      "revision": null,
+      "license": null,
+      "content_sha256": "e2688c62931ff2643c7f4d95146789a022df06b8390b13972e5c5aae52de73a2",
+      "modified": null
+    },
+    {
       "name": "blast-radius",
       "ownership": "vendored-pending-review",
       "provider": "cursor",
@@ -154,7 +167,7 @@
       "upstream_branch": "main",
       "revision": null,
       "license": null,
-      "content_sha256": "435c9b706cd56bb3d384634994499a1b5ed2e9f3994f6e3c610235cdf52aaf19",
+      "content_sha256": "4861570437809b93d99096edac7fe9e1f1b758229d45db4f6bc0a6c246287c4e",
       "modified": null
     },
     {
