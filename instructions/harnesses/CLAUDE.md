@@ -10,16 +10,6 @@ When a request depends on recency ("latest", "current", "today", "as of now"):
 2. **Prefer official / primary sources** — upstream vendor docs for any dependency (language runtime, framework, cloud provider). For Claude / Anthropic questions (models, pricing, SDK, API, MCP, Claude Code itself), invoke the `product-self-knowledge` skill rather than answering from memory.
 3. **Prefer the newest authoritative information** — versioned docs, release notes, changelogs. Cross-check at least two reputable sources when details are safety- or compatibility-sensitive.
 
-### Web search policy
-
-- Use `WebSearch` / `WebFetch` only when it materially improves correctness (up-to-date APIs, advisories, release notes, security guidance).
-- Prefer official docs and primary sources. Record publish / release dates when relevant.
-- For GitHub URLs, prefer the `gh` CLI via Bash over `WebFetch`.
-
-## Autonomy and safety
-
-**Local workspace.** Start read-only (`Read`, `Grep`, `Glob`, `Agent` with `Explore`). Once the stated goal requires edits, make them without asking — keep changes inside the current workspace. Confirm each time before destructive git operations (force push, history rewrite, branch deletion), package downgrades, and shared-state changes. Authorization once ≠ authorization forever.
-
 ### Git workflow
 
 - Stage, commit, and push once you're confident in code quality. No approval needed.
@@ -60,32 +50,11 @@ Read the full source → draft the output → **re-read the original before fina
 - Redact sensitive strings in any displayed output.
 - Some repos hardcode credentials in scripts (e.g., Akamai `CLIENT_SECRET` / `CLIENT_TOKEN` / `ACCESS_TOKEN`). Never echo them, commit them, include them in PRs or issues, or paste them into web fetches — even when they already exist in the file being edited. Flag them; don't silently "fix" them.
 
-## Baseline workflow
-
-At the start of each task, determine the following **silently** — surface it only when it changes the plan:
-
-1. Goal and acceptance criteria.
-2. Constraints (time, safety, scope, reversibility).
-3. What must be inspected (files, commands, tests, docs).
-4. Whether the request depends on **recency** — if yes, apply the sourcing rules above.
-5. Whether the task warrants a plan — `EnterPlanMode` for non-trivial implementation, `TodoWrite` for multi-step tracking.
-6. Whether requirements are ambiguous *and the decision is genuinely mine to make* — if so, use `AskUserQuestion` before irreversible actions. Don't ask about anything you could determine by reading.
-
-Use subagents (`Agent`) for open-ended exploration that would consume a lot of context, or for independent lookups that can run in parallel: `Explore` for read-only code search, `Plan` for architecting, `general-purpose` for broader multi-step research, `claude-code-guide` for Claude Code / SDK / API questions.
-
 ### Second-opinion reviewers (grok, codex, `/interrogate`)
 
 Spawn each reviewer as a **subagent** running the ordinary CLI from my PATH (`grok`, `codex`), in the **same project directory as the master session**, so the run shows up in the cmux sidebar and I can follow it live. Do not build headless one-shots with `--sandbox`, `--always-approve`, `--prompt-file`, output redirection, or a `GH_TOKEN` hand-off — a raw process is invisible to cmux (`grok dashboard` shows "No agents yet"), and the sandbox blocks keychain access, which breaks the reviewer's `gh` with HTTP 401 and then needs working around.
 
 Keep only flags that carry a real requirement: the model and reasoning tier I asked for (e.g. `-m grok-4.6 --reasoning-effort xhigh`, since grok's config defaults effort to `low`), and `--no-subagents` when I cap the reviewer count. Headless flag details still apply if a run genuinely has to be non-interactive, but that is the exception.
-
-## Workspace continuity
-
-Use `.agent/CONTINUITY.md` when work is multi-session, shared with another agent tool, likely to be compacted, or complex enough that a durable handoff is valuable.
-
-- When it exists, read it at the start of work before acting.
-- Do not create or update it for trivial, one-shot tasks unless there is a meaningful decision or state worth preserving.
-- Keep it bounded and high-signal. Format, sections, and anti-drift rules live in `~/.claude/rules/continuity.md`; read that file before writing to `.agent/` for the first time in a session.
 
 ## Communication
 
@@ -105,7 +74,6 @@ Use `.agent/CONTINUITY.md` when work is multi-session, shared with another agent
 - impact explained as a plain-language summary (see **Communication** above),
 - follow-ups listed if anything was intentionally left out,
 - committed and pushed per the git workflow above,
-- `.agent/CONTINUITY.md` updated if the change materially affects goal / state / decisions.
 
 **For questions, trivial fixes, and read-only tasks:** answer it or make the change, say what you did, and skip the checklist.
 
