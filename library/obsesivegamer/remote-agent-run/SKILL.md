@@ -1,10 +1,10 @@
 ---
 name: remote-agent-run
 description: >-
-  Offload a whole implementation to another Mac on the tailnet: verify the repo
-  is cloned there, required env vars exist, Claude Code runs the requested model
-  inside a tmux session the user can watch from cmux, and computer use happens
-  only on the remote Mac. Use whenever the user asks to "kick off an agent run
+  Offload a whole implementation to another tailnet machine (a Mac, or Windows
+  running the job in WSL): verify the repo is cloned there, required env vars
+  exist, Claude Code runs the requested model inside a tmux session the user can
+  watch from cmux, and computer use happens only on the target. Use whenever the user asks to "kick off an agent run
   on <machine>", "move this workload to <machine>", run Claude or Opus "on my
   other computer", "over tailscale", or wants a long agent job to stop taking
   over the Mac they are using — even if they don't say "remote".
@@ -12,7 +12,7 @@ description: >-
 
 # Remote agent run
 
-The user wants a long agent job to run on a different Mac (the **target**) while they keep using this one (the **controller**). Three things matter to them, in order:
+The user wants a long agent job to run on a different machine (the **target**) while they keep using this one (the **controller**). Three things matter to them, in order:
 
 1. The run actually works on the target: repo, secrets, model, subagents, computer use.
 2. They can watch the thread in cmux, the way they watch local runs.
@@ -26,8 +26,9 @@ When anything behaves differently from what this skill expects, stop and ask. A 
 
 - Find the host in `tailscale status` (on this Mac the CLI may be `TAILSCALE_BE_CLI=1 /Applications/Tailscale.app/Contents/MacOS/Tailscale`) and in `~/.ssh/config`.
 - The first row of `tailscale status` is this machine. **If the requested target is this machine, stop and ask** which machine they meant. The user's hostnames overlap, so this happens.
-- Users often have nicknames for machines ("Leftbook"). If the request uses a name that is not a tailnet hostname or ssh alias, or uses two names for one target, confirm the mapping once and save it to memory.
-- The target must be online and a Mac with someone logged in to the GUI (computer use needs a desktop session).
+- Users often have nicknames for machines ("the server", "the old laptop"). If the request uses a name that is not a tailnet hostname or ssh alias, or uses two names for one target, confirm the mapping once and save it to memory.
+- If the user names no machine, check memory for their usual offload target and confirm it in one line.
+- Supported targets: a **Mac**, or **Windows running the job inside WSL**. Preflight detects which. For Windows, read [windows-wsl.md](references/windows-wsl.md) now: its commands replace the Mac ones in steps 4 and 5.
 
 ## 2. Preflight (read-only)
 
@@ -37,7 +38,7 @@ Run the bundled script. It only reads state and never prints secret values:
 scripts/preflight.sh <ssh-host> <repo-path-on-target> <model-id> [ENV_NAME ...]
 ```
 
-Resolve `scripts/` relative to this SKILL.md. Get the env var names first (see [preflight.md](references/preflight.md#finding-required-env-var-names)). The script reports: self-target guard (runs before SSH), SSH reachability, macOS target, GUI user, `claude` / `tmux` / `git` / `gh` presence, repo state, each env var as `set` or `MISSING`, and a one-shot model call that proves auth and model access together.
+Resolve `scripts/` relative to this SKILL.md. Get the env var names first (see [preflight.md](references/preflight.md#finding-required-env-var-names)). The script reports: self-target guard (runs before SSH), SSH reachability, platform (Mac or Windows+WSL), desktop session, `claude` / `tmux` / `git` / `gh` presence, repo state, each env var as `set` or `MISSING`, and a one-shot model call that proves auth and model access together.
 
 Fix each failing line using [preflight.md](references/preflight.md). Things only the user can do — enabling Remote Login, granting macOS privacy permissions, `claude /login` or `claude setup-token`, unlocking the keychain, supplying secret values — go to the user as a short numbered list. Do not attempt them. Rerun preflight until it is clean, then show the user the final checklist.
 
@@ -77,7 +78,7 @@ Read the pane (`ssh <host> 'zsh -lc "tmux capture-pane -p -t <session>"' | tail 
 
 - The header shows the requested model. If it shows another one, stop and report.
 - Claude has started reading the brief, not sitting on a login, trust-folder, or permission prompt.
-- The brief's first step (a computer-use screenshot on the target) succeeded. If macOS blocked it, the error names the process that needs Screen Recording / Accessibility. Tell the user exactly which process on which Mac, and wait. Granting those is theirs to do. If the session has no computer-use tool at all, ask the user how they enable it on that machine rather than guessing.
+- The brief's first step succeeded: a computer-use screenshot on a Mac, or a browser check inside WSL on Windows. If macOS blocked it, the error names the process that needs Screen Recording / Accessibility. Tell the user exactly which process on which Mac, and wait. Granting those is theirs to do. If the session has no computer-use tool at all, ask the user how they enable it on that machine rather than guessing.
 
 Only then report "running".
 
@@ -89,6 +90,7 @@ The target's run log (`.agent-run/<run-id>/LOG.md`) and the tmux pane are the so
 
 - Using computer-use, Chrome, or the browser pane on this Mac for any part of the run.
 - Launching Claude in a plain `ssh` session without tmux, so the run dies when the connection drops.
+- On Windows, reporting "running" before checking that tmux survived the SSH disconnect. See [windows-wsl.md](references/windows-wsl.md#keeping-the-run-alive).
 - Treating "Not logged in" over SSH as a missing account. It is usually the macOS keychain being unavailable to SSH sessions. See [preflight.md](references/preflight.md#claude-auth-over-ssh).
 - Copying a whole `.env` across machines without asking.
 - Declaring success from a launched process instead of a model header and a working first step.

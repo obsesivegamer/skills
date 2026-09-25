@@ -5,7 +5,7 @@ Fill every `<…>`. This is the first message the remote Claude session receives
 ```markdown
 # Agent run <run-id>
 
-You are running on <target-host>, a Mac dedicated to this job. The user is watching this thread from another machine through cmux and is not at this Mac's keyboard.
+You are running on <target-host> (<a Mac | Windows, inside WSL>), dedicated to this job. The user is watching this thread from another machine through cmux and is not at this Mac's keyboard.
 
 ## Goal
 <one paragraph: what to build or fix, and why>
@@ -22,8 +22,9 @@ You are running on <target-host>, a Mac dedicated to this job. The user is watch
 
 ## How to work
 - Do the whole implementation in this session, in one pass. Use as many subagents as the work benefits from; give parallel workers disjoint files.
-- You have full computer use on this Mac. Use it for anything that needs a real UI (running the app, checking it in a browser). Nobody else is using this screen.
-- First step: take one computer-use screenshot to confirm access. If it fails, or you have no computer-use tool, write the exact error to LOG.md and stop. Do not work around it.
+- <Mac:> You have full computer use on this Mac. Use it for anything that needs a real UI (running the app, checking it in a browser). Nobody else is using this screen.
+- <WSL:> You cannot control the Windows desktop. Check UI work in a browser inside WSL (headless Playwright, or Chrome via WSLg).
+- First step: prove your UI access works: one computer-use screenshot on a Mac, or loading a page in the WSL browser. If it fails, or you have no such tool, write the exact error to LOG.md and stop. Do not work around it.
 - Git: <allowed actions, e.g. commit and push to `<branch>`, open a PR, never merge>.
 - If something blocks you that needs a human (a login, a permission dialog, a missing secret, an ambiguous requirement), write the question at the top of LOG.md and in this thread, then continue with any work that doesn't depend on it.
 

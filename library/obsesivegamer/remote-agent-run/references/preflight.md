@@ -2,6 +2,8 @@
 
 One section per preflight line. Anything marked **user** is theirs to do; give them the exact step and wait.
 
+For a Windows target, the SSH, tools, login, and computer-use fixes are in [windows-wsl.md](windows-wsl.md) instead. The repo and env var sections below apply to both.
+
 ## Self-target guard
 
 `SAME MACHINE`: the ssh host resolves to this Mac. Stop and ask which machine they meant. Do not "fix" it by picking another host yourself.
