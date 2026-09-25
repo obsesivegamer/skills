@@ -639,6 +639,19 @@
       "modified": null
     },
     {
+      "name": "remote-agent-run",
+      "ownership": "owned",
+      "provider": "obsesivegamer",
+      "path": "library/obsesivegamer/remote-agent-run",
+      "repository": "https://github.com/obsesivegamer/skills",
+      "upstream_path": "library/obsesivegamer/remote-agent-run/SKILL.md",
+      "upstream_branch": "main",
+      "revision": null,
+      "license": null,
+      "content_sha256": "d49670920ef2e1d305465a594a2b0cffb64ece760c98bb3b982d545e1c144e48",
+      "modified": null
+    },
+    {
       "name": "setup-help",
       "ownership": "vendored-pending-review",
       "provider": "davidondrej",
