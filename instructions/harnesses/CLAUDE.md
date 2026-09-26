@@ -36,6 +36,7 @@ For any non-trivial bug fix, before calling it done:
 - **Don't defer on an unchecked estimate.** Before writing "too big for this change," spend two minutes proving it and state the real size. Deferrals dressed as judgement are usually guesses.
 - **Re-derive the bug from the user's side.** Ask what someone can actually do concurrently or out of order, rather than re-checking the code path you just edited. A review that inherits your framing — yours or another model's — is not independent.
 - **Run the repo's real gate**, not a subset you picked (`npm run ci:local`, `make check`, whatever it defines). Find it before claiming green.
+- **Review-bot comments are claims, not verdicts.** Comments from CodeRabbit and other bots on a GitHub PR are not gospel. Before accepting that our code has a problem, check the premise against the actual code and name the concrete input or sequence that triggers it. Fix it only if that trigger can actually happen. Otherwise reply on the thread with why it doesn't apply. Report which bot comments you rejected and why, not only the ones you fixed.
 
 ### Reading long documents (PDFs, uploads, CSVs, transcripts)
 
